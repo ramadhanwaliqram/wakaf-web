@@ -16,3 +16,10 @@
 <link href="{{ asset('assets/css/sb-admin-2.min.css') }}" rel="stylesheet">
 <link href="{{ asset('/assets/img/mosque.png') }}" rel="icon">
 <link href="{{ asset('/assets/img/mosque.png') }}" rel="apple-touch-icon">
+<link href="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+
+<style>
+    .custom-padding-button-swal {
+        padding: 10px 20px;
+    }
+</style>
