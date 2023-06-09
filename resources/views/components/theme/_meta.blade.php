@@ -17,9 +17,4 @@
 <link href="{{ asset('/assets/img/mosque.png') }}" rel="icon">
 <link href="{{ asset('/assets/img/mosque.png') }}" rel="apple-touch-icon">
 <link href="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
-
-<style>
-    .custom-padding-button-swal {
-        padding: 10px 20px;
-    }
-</style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
