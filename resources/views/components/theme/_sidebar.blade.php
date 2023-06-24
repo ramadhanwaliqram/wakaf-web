@@ -39,17 +39,21 @@
         </div>
     </li>
 
-    <li class="nav-item {{ request()->is('admin/wakaf') ? 'active' : '' }}">
+    <li class="nav-item {{ request()->is('admin/wakaf') || request()->is('admin/transaction') ? 'active' : '' }}">
         <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
             aria-controls="collapseTwo">
             <i class="fas fa-fw fa-clipboard-list"></i>
             <span>Wakaf</span>
         </a>
-        <div id="collapseTwo" class="collapse {{ request()->is('admin/wakaf') ? 'show' : '' }}"
+        <div id="collapseTwo"
+            class="collapse {{ request()->is('admin/wakaf') || request()->is('admin/transaction') ? 'show' : '' }}"
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item {{ request()->is('admin/wakaf') ? 'active' : '' }}"
-                    href="{{ route('admin.wakaf') }}">Data
+                    href="{{ route('admin.wakaf') }}">Program
+                    Wakaf</a>
+                <a class="collapse-item {{ request()->is('admin/transaction') ? 'active' : '' }}"
+                    href="{{ route('admin.transaction') }}">Transaksi
                     Wakaf</a>
             </div>
         </div>

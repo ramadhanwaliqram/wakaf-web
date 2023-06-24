@@ -1,6 +1,6 @@
 @extends('layouts.admin')
-@section('title', 'Data Program Wakaf | ' . config('app.name'))
-@section('title-1', 'Data Program Wakaf')
+@section('title', 'Data Transaksi Wakaf | ' . config('app.name'))
+@section('title-1', 'Data Transaksi Wakaf')
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -10,7 +10,7 @@
                     {{-- <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6> --}}
                     <div class="d-flex justify-content-end">
                         <button id="add" type="button" class="btn btn-primary"><i class="fas fa-fw fa-plus"></i>
-                            Tambah Program</button>
+                            Tambah Transaksi</button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -19,10 +19,11 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Detail</th>
-                                    <th>Judul Program</th>
-                                    {{-- <th>Deskripsi</th> --}}
-                                    <th>Target</th>
+                                    <th>Program</th>
+                                    <th>Atas Nama</th>
+                                    <th>Donasi</th>
+                                    <th>Status</th>
+                                    <th>Dirujuk</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -36,8 +37,7 @@
     </div>
 
     {{-- modal --}}
-    @include('admin.wakaf.modal._modal')
-    @include('admin.wakaf.modal._modal-image')
+    @include('admin.transaction.modal._modal')
 @endsection
 {{-- addons css --}}
 @push('css')
@@ -46,17 +46,6 @@
 {{-- addons js --}}
 @push('js')
     <script>
-        var editor;
-
-        ClassicEditor
-            .create(document.querySelector('#description'))
-            .then(newEditor => {
-                editor = newEditor;
-            })
-            .catch(error => {
-                console.error(error);
-            });
-
         function formatRupiah(input) {
             // Remove non-digit characters from the value
             let value = input.value.replace(/\D/g, '');
@@ -72,37 +61,42 @@
             // Update the input field value with the formatted value
             input.value = formattedValue;
         }
-    </script>
-    <script>
-        $(document).ready(function() {
 
+        $(document).ready(function() {
+            $('.wakaf').select2({
+                theme: 'bootstrap4',
+            });
             $('#feature-table').DataTable({
                 processing: true,
                 serverSide: true,
                 responsive: true,
                 autoWidth: false,
                 ajax: {
-                    url: "{{ route('admin.wakaf') }}",
+                    url: "{{ route('admin.transaction') }}",
                 },
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex'
                     },
                     {
-                        data: 'detail',
-                        name: 'detail',
+                        data: 'wakaf',
+                        name: 'wakaf',
                     },
                     {
-                        data: 'title',
-                        name: 'title'
+                        data: 'signature',
+                        name: 'signature',
                     },
-                    // {
-                    //     data: 'description',
-                    //     name: 'description'
-                    // },
                     {
-                        data: 'target',
-                        name: 'target'
+                        data: 'amount',
+                        name: 'amount',
+                    },
+                    {
+                        data: 'status',
+                        name: 'status',
+                    },
+                    {
+                        data: 'reference',
+                        name: 'reference',
                     },
                     {
                         data: 'action',
@@ -111,28 +105,27 @@
                 ]
             });
 
-            $(document).on('click', '.detail-wakaf', function() {
-                let userUuid = $(this).attr('id');
-                $.ajax({
-                    url: '/admin/wakaf/' + userUuid,
-                    dataType: 'JSON',
-                    success: function(data) {
-                        $('.title-wakaf').text(data.title);
-                        $('.description-wakaf').html(data.description);
-                        $('#image-detail-wakaf').attr('src', '/storage/wakaf/' + data
-                            .thumbnail);
-                        $('#modal-detail-wakaf').modal('show');
-                    },
-                    error: function(errors) {
-                        Swal.fire('Error!', 'Something went wrong!', 'error');
-                        $('#modal-detail-wakaf').modal('hide');
-                    }
-                });
-            });
+            // $(document).on('click', '.detail-wakaf', function() {
+            //     let userUuid = $(this).attr('id');
+            //     $.ajax({
+            //         url: '/admin/transaction/' + userUuid,
+            //         dataType: 'JSON',
+            //         success: function(data) {
+            //             $('.title-wakaf').text(data.title);
+            //             $('.description-wakaf').html(data.description);
+            //             $('#image-detail-wakaf').attr('src', '/storage/transaction/' + data
+            //                 .thumbnail);
+            //             $('#modal-detail-wakaf').modal('show');
+            //         },
+            //         error: function(errors) {
+            //             Swal.fire('Error!', 'Something went wrong!', 'error');
+            //             $('#modal-detail-wakaf').modal('hide');
+            //         }
+            //     });
+            // });
 
             $('#add').on('click', function() {
-                $('#modal-title').html('Tambah wakaf');
-                editor.setData('');
+                $('#modal-title').html('Tambah Transaksi');
                 $('#form-feature')[0].reset();
                 $('#btn')
                     .removeClass('btn-info')
@@ -140,11 +133,11 @@
                     .val('Simpan');
                 $('#action').val('add');
                 $('#modal-feature').modal('show');
+                // $(".wakaf").val('').trigger('change')
             });
 
             $('#cancelModal').on('click', function() {
                 $('#modal-feature').modal('hide');
-                editor.setData('');
                 $('#form-feature')[0].reset();
             });
 
@@ -156,11 +149,11 @@
                 let formData = new FormData($('#form-feature')[0]);
 
                 if ($('#action').val() == 'add') {
-                    url = "{{ route('admin.wakaf-add') }}";
+                    url = "{{ route('admin.transaction-add') }}";
                 }
 
                 if ($('#action').val() == 'edit') {
-                    url = "/admin/wakaf/update/" + uuid;
+                    url = "/admin/transaction/update/" + uuid;
                 }
 
                 $('#btn').prop('disabled', true);
@@ -180,10 +173,10 @@
                                 var errorMessage = data.errors[field][0];
                                 toastr.error(errorMessage);
                             }
-                            $('#title').addClass('is-invalid');
-                            $('#description').addClass('is-invalid');
-                            $('#target').addClass('is-invalid');
-                            $('#thumbnail').addClass('is-invalid');
+                            $('#wakaf').addClass('is-invalid');
+                            $('#signature').addClass('is-invalid');
+                            $('#amount').addClass('is-invalid');
+                            $('#status').addClass('is-invalid');
                             $('#btn').prop('disabled', false);
                         }
 
@@ -197,10 +190,10 @@
                             }
 
                             $('#modal-feature').modal('hide');
-                            $('#title').removeClass('is-invalid');
-                            $('#description').removeClass('is-invalid');
-                            $('#target').removeClass('is-invalid');
-                            $('#thumbnail').removeClass('is-invalid');
+                            $('#wakaf').removeClass('is-invalid');
+                            $('#signature').removeClass('is-invalid');
+                            $('#amount').removeClass('is-invalid');
+                            $('#status').removeClass('is-invalid');
                             $('#form-feature')[0].reset();
                             $('#action').val('add');
                             $('#btn').prop('disabled', false);
@@ -220,16 +213,15 @@
             $(document).on('click', '.edit', function() {
                 let userUuid = $(this).attr('id');
                 $.ajax({
-                    url: '/admin/wakaf/' + userUuid,
+                    url: '/admin/transaction/' + userUuid,
                     dataType: 'JSON',
                     success: function(data) {
-                        $('#modal-title').html('Edit wakaf')
+                        $('#modal-title').html('Edit Transaksi')
                         $('#action').val('edit');
-                        $('#title').val(data.title);
-                        editor.setData(data.description);
-                        $('#target').val(data.target);
-                        // $('#thumbnail').html(data.description);
-                        $('#thumbnail-description').text(data.thumbnail);
+                        $('#wakaf').val(data.wakaf_uuid);
+                        $('#signature').val(data.signature);
+                        $('#amount').val(data.amount);
+                        $('#status').val(data.status);
                         $('#hidden_id').val(data.uuid);
                         $('#btn')
                             .removeClass('btn-success')
@@ -259,7 +251,7 @@
                     if (result.value) {
                         $.ajax({
                             method: "DELETE",
-                            url: '/admin/wakaf/delete/' + user_id,
+                            url: '/admin/transaction/delete/' + user_id,
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
@@ -277,7 +269,7 @@
                                 setTimeout(function() {
                                     Swal.fire({
                                         title: 'Success!',
-                                        text: 'Wakaf deleted successfully',
+                                        text: 'Transaction deleted successfully',
                                         icon: 'success',
                                         showConfirmButton: false,
                                         timer: 1000
