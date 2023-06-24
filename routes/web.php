@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\admin\CommitteeController;
 use App\Http\Controllers\admin\WakifController;
+use App\Http\Controllers\admin\WakafController;
 use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\admin\TransactionWakafController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,6 +56,20 @@ Route::namespace('admin')
             Route::get('/admin/wakif/{uuid}', [WakifController::class, 'edit']);
             Route::post('/admin/wakif/update/{uuid}', [WakifController::class, 'update'])->name('wakif.update');
             Route::delete('/admin/wakif/delete/{uuid}', [WakifController::class, 'destroy'])->name("delete-wakif");
+
+            // Data Wakaf
+            Route::get('/admin/wakaf', [WakafController::class, 'index'])->name('wakaf');
+            Route::post('/admin/wakaf', [WakafController::class, 'store'])->name("wakaf-add");
+            Route::get('/admin/wakaf/{uuid}', [WakafController::class, 'edit']);
+            Route::post('/admin/wakaf/update/{uuid}', [WakafController::class, 'update'])->name('wakaf.update');
+            Route::delete('/admin/wakaf/delete/{uuid}', [WakafController::class, 'destroy'])->name("delete-wakaf");
+
+            // Data Transaksi
+            Route::get('/admin/transaction', [TransactionWakafController::class, 'index'])->name('transaction');
+            Route::post('/admin/transaction', [TransactionWakafController::class, 'store'])->name("transaction-add");
+            Route::get('/admin/transaction/{uuid}', [TransactionWakafController::class, 'edit']);
+            Route::post('/admin/transaction/update/{uuid}', [TransactionWakafController::class, 'update'])->name('transaction.update');
+            Route::delete('/admin/transaction/delete/{uuid}', [TransactionWakafController::class, 'destroy'])->name("delete-transaction");
         }
     );
 
