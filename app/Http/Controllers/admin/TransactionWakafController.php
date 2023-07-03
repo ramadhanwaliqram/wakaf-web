@@ -9,6 +9,7 @@ use App\Models\Wakaf;
 use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 
 class TransactionWakafController extends Controller
@@ -20,7 +21,7 @@ class TransactionWakafController extends Controller
     public function index(Request $request)
     {
         $dataWakaf = Wakaf::whereStatus('active')->get();
-        $data = TransactionWakaf::with(['wakaf', 'references'])->latest()->get();
+        $data = TransactionWakaf::with(['wakaf', 'references', 'signatures'])->latest()->get();
 
         if ($request->ajax()) {
 
@@ -34,7 +35,16 @@ class TransactionWakafController extends Controller
                     return $data->wakaf->title;
                 })
                 ->editColumn('reference', function ($data) {
-                    return $data->references->name;
+                    if (empty($data->signatures->name)) {
+                        $role = $data->references->role == 'committee' ? 'panitia' : $data->references->role;
+                        $ref = $data->references->name . ' (' . Str::ucfirst($role) . ')';
+                    }
+                    if (empty($data->references->name)) {
+                        $role = $data->signatures->role == 'user' ? 'pewakaf' : $data->signatures->role;
+                        $ref = $data->signatures->name . ' (' . Str::ucfirst($role) . ')';
+                    }
+
+                    return $ref ?? '-';
                 })
                 ->editColumn('amount', function ($data) {
                     $formattedTarget = "Rp " . number_format($data->amount, 0, ',', '.');
