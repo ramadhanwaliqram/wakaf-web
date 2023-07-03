@@ -21,9 +21,9 @@
                                     <th>#</th>
                                     <th>Program</th>
                                     <th>Atas Nama</th>
+                                    <th>Dirujuk</th>
                                     <th>Donasi</th>
                                     <th>Status</th>
-                                    <th>Dirujuk</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -87,16 +87,16 @@
                         name: 'signature',
                     },
                     {
+                        data: 'reference',
+                        name: 'reference',
+                    },
+                    {
                         data: 'amount',
                         name: 'amount',
                     },
                     {
                         data: 'status',
                         name: 'status',
-                    },
-                    {
-                        data: 'reference',
-                        name: 'reference',
                     },
                     {
                         data: 'action',

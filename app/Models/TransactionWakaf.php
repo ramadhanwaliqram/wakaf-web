@@ -30,6 +30,11 @@ class TransactionWakaf extends Model
         return $this->belongsTo(User::class, 'reference', 'uuid');
     }
 
+    public function signatures(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_uuid', 'uuid');
+    }
+
     public function wakaf(): BelongsTo
     {
         return $this->belongsTo(Wakaf::class, 'wakaf_uuid', 'uuid');

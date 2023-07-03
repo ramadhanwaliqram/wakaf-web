@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\API\WakafController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,4 +38,22 @@ Route::group([
     'middleware' => ['api', 'auth:api', 'json.response']
 ], function () {
     Route::post('logout', [AuthController::class, 'logout']);
+});
+
+Route::group([
+    'prefix' => 'v1',
+    'namespace' => 'App\Http\Controllers\API',
+    'middleware' => ['api', 'auth:api', 'json.response']
+], function () {
+    // Profile
+    Route::get('profile', [ProfileController::class, 'index']);
+    Route::put('profile/update-password', [ProfileController::class, 'updatePassword']);
+    Route::put('profile/update-profile', [ProfileController::class, 'updateProfile']);
+
+    // Wakaf 
+    Route::get('wakafs', [WakafController::class, 'index']);
+
+    // Transaction
+    Route::post('transaction', [WakafController::class, 'transaction']);
+    Route::get('transaction/history', [WakafController::class, 'history']);
 });
