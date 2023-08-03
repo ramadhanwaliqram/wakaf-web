@@ -154,14 +154,21 @@ class TransactionWakafController extends Controller
             }
 
             $amount = preg_replace("/[^0-9]/", "", str_replace(',', '', $request->input('amount')));
-
-            TransactionWakaf::findOrFail($uuid)->update([
-                'wakaf_uuid' => $request->input('wakaf'),
-                'signature' => $request->input('signature'),
-                'amount' => $amount,
-                'reference' => auth()->user()->uuid,
-                'status' => $request->input('status'),
-            ]);
+            if (!empty($request->hidden_user_uuid)) {
+                TransactionWakaf::findOrFail($uuid)->update([
+                    'wakaf_uuid' => $request->input('wakaf'),
+                    'signature' => $request->input('signature'),
+                    'amount' => $amount,
+                    'status' => $request->input('status'),
+                ]);
+            } else {
+                TransactionWakaf::findOrFail($uuid)->update([
+                    'wakaf_uuid' => $request->input('wakaf'),
+                    'signature' => $request->input('signature'),
+                    'amount' => $amount,
+                    'status' => $request->input('status'),
+                ]);
+            }
         } catch (\Throwable $th) {
             throw $th;
         }

@@ -223,6 +223,7 @@
                         $('#amount').val(data.amount);
                         $('#status').val(data.status);
                         $('#hidden_id').val(data.uuid);
+                        $('#hidden_user_uuid').val(data.user_uuid);
                         $('#btn')
                             .removeClass('btn-success')
                             .addClass('btn-info')

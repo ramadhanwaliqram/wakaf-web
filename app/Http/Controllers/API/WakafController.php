@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\TransactionWakaf;
 use App\Models\Wakaf;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\Types\Null_;
 
 class WakafController extends Controller
 {
@@ -12,7 +14,7 @@ class WakafController extends Controller
     {
         $only = $request->only(['status', 'per_page', 'page', 'keyword']);
 
-        $query = Wakaf::where('status', $only['status']);
+        $query = Wakaf::with('transaction')->where('status', $only['status']);
 
         if (isset($only['keyword'])) {
             $query->where('title', 'LIKE', '%' . $only['keyword'] . '%');
@@ -22,6 +24,10 @@ class WakafController extends Controller
         $page = $only['page'] ?? 1;
 
         $wakaf = $query->paginate($perPage, ['*'], 'page', $page);
+        foreach ($wakaf as $key => $item) {
+            $item->makeHidden('transaction');
+            $item['total_amount'] = $item->transaction->where('status', 'success')->sum('amount');
+        }
 
         $response = array_merge([
             "success" => true,
@@ -36,7 +42,7 @@ class WakafController extends Controller
         $user = auth()->user();
 
         //check user not have pending deposit
-        $pendingTransaction = $user->transaction()->where('user_uuid', $user->uuid)->where('status', 'pending')->first();
+        $pendingTransaction = $user->transaction()->where('user_uuid', $user->uuid)->orWhere('reference', $user->uuid)->where('status', 'pending')->first();
 
         if ($pendingTransaction) {
             return response()->json([
@@ -48,20 +54,19 @@ class WakafController extends Controller
 
         try {
             $amount = preg_replace("/[^0-9]/", "", str_replace(',', '', $request->amount));
-
-            if ($user->role != 'user') {
-                $transaction = $user->transaction()->create([
-                    'wakaf_uuid' => $request->wakaf_uuid,
-                    'signature' => $request->signature,
-                    'amount' => $amount,
-                    'reference' => auth()->user()->uuid,
-                    'status' => $request->status,
-                ]);
-            } else {
-                $transaction = $user->transaction()->create([
+            if ($user->role == 'user') {
+                $transaction = TransactionWakaf::create([
                     'wakaf_uuid' => $request->wakaf_uuid,
                     'user_uuid' => auth()->user()->uuid,
                     'signature' => $request->signature,
+                    'amount' => $amount,
+                    'status' => $request->status,
+                ]);
+            } else {
+                $transaction = TransactionWakaf::create([
+                    'wakaf_uuid' => $request->wakaf_uuid,
+                    'signature' => $request->signature,
+                    'reference' => auth()->user()->uuid,
                     'amount' => $amount,
                     'status' => $request->status,
                 ]);
@@ -86,7 +91,7 @@ class WakafController extends Controller
 
         $user = auth()->user();
 
-        $query = $user->transaction();
+        $query = TransactionWakaf::with('wakaf', 'references')->where('user_uuid', $user->uuid)->orWhere('reference', $user->uuid)->latest();
 
         if (isset($only['status'])) {
             $query->where('status', $only['status']);

@@ -57,3 +57,12 @@ Route::group([
     Route::post('transaction', [WakafController::class, 'transaction']);
     Route::get('transaction/history', [WakafController::class, 'history']);
 });
+
+Route::group([
+    'prefix' => 'v1',
+    'namespace' => 'App\Http\Controllers\API',
+    'middleware' => ['api', 'json.response']
+], function () {
+    // Wakaf 
+    Route::get('wakafs', [WakafController::class, 'index']);
+});
