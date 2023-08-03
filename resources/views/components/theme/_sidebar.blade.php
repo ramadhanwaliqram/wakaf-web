@@ -59,17 +59,10 @@
         </div>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true"
-            aria-controls="collapseThree">
+    <li class="nav-item {{ request()->is('admin/report') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.report') }}">
             <i class="fas fa-fw fa-file-pdf"></i>
-            <span>Laporan</span>
-        </a>
-        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="#">Laporan Wakaf</a>
-            </div>
-        </div>
+            <span>Laporan</span></a>
     </li>
 
     <!-- Divider -->

@@ -52,6 +52,7 @@
 
                     <div class="modal-footer">
                         <input type="hidden" name="hidden_id" id="hidden_id">
+                        <input type="hidden" name="hidden_user_uuid" id="hidden_user_uuid">
                         <input type="hidden" id="action" val="add">
                         <input type="submit" class="btn btn-success" value="Simpan" id="btn">
                         <button type="button" class="btn btn-danger" id="cancelModal"
